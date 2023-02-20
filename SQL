@@ -40,7 +40,7 @@ INNER JOIN (
   SELECT DISTINCT client_id
   FROM bank_additional_full
   WHERE campaign > 0 AND poutcome = 'success'
-) AS b ON a.client_id = b.client_id
+) AS b ON a. age = b.age
 GROUP BY a.education;
 
 # What is the distribution of jobs among clients in the bank-add table? Show the job title and the percentage of clients with that job.

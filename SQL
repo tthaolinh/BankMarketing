@@ -1,0 +1,49 @@
+# How many rows are in the bank-additional-full.csv dataset?
+SELECT COUNT(*) FROM bank_additional_full;
+
+# What are the distinct values of the "job" column in the bank.csv dataset?
+SELECT DISTINCT job FROM bank;
+
+# How many unique months are in the "month" column of the bank-additional-full dataset?
+SELECT COUNT(DISTINCT month) FROM bank_additional_full;
+
+# What is the most common outcome of the previous marketing campaign in the bank.csv dataset?
+SELECT poutcome, COUNT(*) AS count FROM bank GROUP BY poutcome ORDER BY count DESC LIMIT 1;
+
+# What is the average age of clients who have defaulted on a loan?
+SELECT AVG(age) as avg_age
+FROM bank_additional_full
+WHERE default = 'yes';
+
+# How does the distribution of education level differ between clients who have a personal loan and those who do not?
+SELECT education, loan, COUNT(*) as count
+FROM bank_additional_full
+GROUP BY education, loan
+ORDER BY education, loan;
+
+# What is the most common job type among clients who have a housing loan? 
+SELECT job, COUNT(*) AS count
+FROM bank_additional_full
+WHERE housing = 'yes'
+GROUP BY job
+ORDER BY count DESC, job ASC;
+
+# What are the distinct communication types used to contact clients in the bank-additional-full and bank-additional datasets?
+SELECT COUNT(*) as total_clients FROM bank_additional_full
+UNION
+SELECT COUNT(*) as total_clients FROM bank
+
+# Find the average age of clients who were successfully contacted during the marketing campaign, and group the results by education level.
+SELECT a.education, AVG(a.age) AS avg_age
+FROM bank_additional_full AS a
+INNER JOIN (
+  SELECT DISTINCT client_id
+  FROM bank_additional_full
+  WHERE campaign > 0 AND poutcome = 'success'
+) AS b ON a.client_id = b.client_id
+GROUP BY a.education;
+
+# What is the distribution of jobs among clients in the bank-add table? Show the job title and the percentage of clients with that job.
+SELECT job, COUNT(*) * 100.0 / (SELECT COUNT(*) FROM bank_additional) AS percentage
+FROM bank_additional
+GROUP BY job;
